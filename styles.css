@@ -1,12 +1,13 @@
 /* Global Styles */
 body {
+    font-family: 'Press Start 2P', cursive; /* Correctly reference the font */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
     margin: 0;
-    background-image:url("pokedex.png"); 
+    background-image: url('https://example.com/path-to-pokemon-background.jpg'); /* Add a Pokémon-themed background */
     background-size: cover;
     color: #333;
 }
