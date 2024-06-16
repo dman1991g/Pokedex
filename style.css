@@ -1,6 +1,5 @@
 /* Global Styles */
 body {
-    font-family: 'Press Start 2P', cursive; /* Use Google Fonts for Pokémon feel */
     display: flex;
     justify-content: center;
     align-items: center;
