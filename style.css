@@ -1,19 +1,93 @@
- body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-        #pokemon-info {
-            border: 1px solid #ccc;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        img {
-            max-width: 100px;
-            display: block;
-            margin: 0 auto 10px;
-        }
+/* Global Styles */
+body {
+    font-family: 'Press Start 2P', cursive; /* Use Google Fonts for Pokémon feel */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+    background-image: url('https://example.com/path-to-pokemon-background.jpg'); /* Add a Pokémon-themed background */
+    background-size: cover;
+    color: #333;
+}
+
+/* Container Styles */
+#pokemon-info {
+    border: 3px solid #ffcb05; /* Bright yellow border */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #3b4cca; /* Pokémon blue */
+}
+
+input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #3b4cca; /* Pokémon blue */
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #ff0000; /* Pokémon red */
+    color: white;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #cc0000; /* Darker red on hover */
+}
+
+/* Result Styles */
+#result {
+    margin-top: 20px;
+}
+
+#result h2 {
+    font-size: 1.2em;
+    margin: 10px 0;
+    color: #ffcb05; /* Pokémon yellow */
+}
+
+#result img {
+    max-width: 100px;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+#result p, #result ul {
+    text-align: left;
+    font-size: 0.9em;
+    color: #555;
+}
+
+#result ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#result ul li {
+    margin-bottom: 5px;
+}
+
+/* Error Message */
+#error {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
