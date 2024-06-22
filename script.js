@@ -1,8 +1,8 @@
 async function fetchPokemon() {
     const pokemonNameOrId = document.getElementById('pokemon-input').value.toLowerCase();
     const resultDiv = document.getElementById('result');
-    const movesDiv = document.getElementById('moves');
-    const locationsDiv = document.getElementById('locations');
+    const movesDiv = document.getElementById('moves-content');
+    const locationsDiv = document.getElementById('locations-content');
     resultDiv.innerHTML = '';
     movesDiv.innerHTML = '';
     locationsDiv.innerHTML = '';
@@ -38,12 +38,20 @@ async function fetchPokemon() {
             throw new Error('Location information not found');
         }
         const locations = await locationResponse.json();
-        const locationList = locations.map(locationInfo => locationInfo.location_area.name).join(', ');
-        const locationsInfo = `
+        const locationInfo = locations.map(locationInfo => {
+            const versionDetails = locationInfo.version_details.map(versionDetail => {
+                const encounterDetails = versionDetail.encounter_details.map(detail => {
+                    return `<li>Method: ${detail.method.name}, Level: ${detail.min_level}-${detail.max_level}, Chance: ${detail.chance}%</li>`;
+                }).join('');
+                return `<li>${versionDetail.version.name}:<ul>${encounterDetails}</ul></li>`;
+            }).join('');
+            return `<h4>${locationInfo.location_area.name}</h4><ul>${versionDetails}</ul>`;
+        }).join('');
+        const locationsContent = `
             <h3>Locations</h3>
-            <p>${locationList}</p>
+            ${locationInfo}
         `;
-        locationsDiv.innerHTML = locationsInfo;
+        locationsDiv.innerHTML = locationsContent;
 
     } catch (error) {
         resultDiv.innerHTML = `<p id="error">${error.message}</p>`;
