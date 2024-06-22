@@ -1,55 +1,51 @@
 async function fetchPokemon() {
-    const input = document.getElementById('pokemon-input').value.toLowerCase();
+    const pokemonNameOrId = document.getElementById('pokemon-input').value.toLowerCase();
     const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = 'Loading...';
+    const movesDiv = document.getElementById('moves');
+    const locationsDiv = document.getElementById('locations');
+    resultDiv.innerHTML = '';
+    movesDiv.innerHTML = '';
+    locationsDiv.innerHTML = '';
 
     try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${input}`);
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonNameOrId}`);
         if (!response.ok) {
             throw new Error('Pokémon not found');
         }
-        const data = await response.json();
+        const pokemon = await response.json();
 
-        // Fetch species information
-        const speciesResponse = await fetch(data.species.url);
-        const speciesData = await speciesResponse.json();
-
-        // Fetch evolution chain
-        const evolutionResponse = await fetch(speciesData.evolution_chain.url);
-        const evolutionData = await evolutionResponse.json();
-
-        resultDiv.innerHTML = `
-            <h2>${data.name}</h2>
-            <img src="${data.sprites.front_default}" alt="${data.name}">
-            <p>Height: ${data.height}</p>
-            <p>Weight: ${data.weight}</p>
-            <p>Type: ${data.types.map(type => type.type.name).join(', ')}</p>
-            <p>Base Stats:</p>
-            <ul>
-                ${data.stats.map(stat => `<li>${stat.stat.name}: ${stat.base_stat}</li>`).join('')}
-            </ul>
-            <p>Abilities: ${data.abilities.map(ability => ability.ability.name).join(', ')}</p>
-            <p>Species: ${speciesData.genera.find(genus => genus.language.name === 'en').genus}</p>
-            <p>Evolution Chain:</p>
-            <ul>
-                ${getEvolutionChain(evolutionData.chain).map(evo => `<li>${evo}</li>`).join('')}
-            </ul>
-            <p>Flavor Text:</p>
-            <p>${speciesData.flavor_text_entries.find(entry => entry.language.name === 'en').flavor_text}</p>
+        // Display basic information
+        const pokemonInfo = `
+            <h2>${pokemon.name}</h2>
+            <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+            <p>Height: ${pokemon.height / 10} m</p>
+            <p>Weight: ${pokemon.weight / 10} kg</p>
+            <p>Type: ${pokemon.types.map(typeInfo => typeInfo.type.name).join(', ')}</p>
         `;
+        resultDiv.innerHTML = pokemonInfo;
+
+        // Display moves
+        const movesList = pokemon.moves.map(moveInfo => moveInfo.move.name).join(', ');
+        const movesInfo = `
+            <h3>Moves</h3>
+            <p>${movesList}</p>
+        `;
+        movesDiv.innerHTML = movesInfo;
+
+        // Fetch and display locations
+        const locationResponse = await fetch(pokemon.location_area_encounters);
+        if (!locationResponse.ok) {
+            throw new Error('Location information not found');
+        }
+        const locations = await locationResponse.json();
+        const locationList = locations.map(locationInfo => locationInfo.location_area.name).join(', ');
+        const locationsInfo = `
+            <h3>Locations</h3>
+            <p>${locationList}</p>
+        `;
+        locationsDiv.innerHTML = locationsInfo;
+
     } catch (error) {
-        resultDiv.innerHTML = `<p style="color:red;">${error.message}</p>`;
+        resultDiv.innerHTML = `<p id="error">${error.message}</p>`;
     }
-}
-
-function getEvolutionChain(chain) {
-    let evoChain = [];
-    let evoData = chain;
-
-    do {
-        evoChain.push(evoData.species.name);
-        evoData = evoData.evolves_to[0];
-    } while (!!evoData && evoData.hasOwnProperty('evolves_to'));
-
-    return evoChain;
 }
