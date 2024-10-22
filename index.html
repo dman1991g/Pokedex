@@ -10,41 +10,27 @@
 <body>
     <div id="pokemon-info">
         <h1>Pokémon Info</h1>
+
+        <!-- Tab Buttons -->
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'BasicInfo')">Basic Info</button>
+            <button class="tablinks" onclick="openTab(event, 'Stats')">Stats</button>
+            <button class="tablinks" onclick="openTab(event, 'Moves')">Moves</button>
+            <button class="tablinks" onclick="openTab(event, 'Locations')">Locations</button>
+        </div>
+
+        <!-- Search Input -->
         <p>Enter Pokémon name or ID:</p>
         <input type="text" id="pokemon-input" placeholder="e.g., Pikachu or 25">
         <button onclick="fetchPokemon()">Fetch Pokémon</button>
-    </div>
-
-    <!-- Tab Buttons -->
-    <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'BasicInfo')">Basic Info</button>
-        <button class="tablinks" onclick="openTab(event, 'Stats')">Stats</button>
-        <button class="tablinks" onclick="openTab(event, 'Moves')">Moves</button>
-        <button class="tablinks" onclick="openTab(event, 'Locations')">Locations</button>
-    </div>
-
-    <!-- Tab Content for Basic Info -->
-    <div id="BasicInfo" class="tabcontent">
-        <h3>Basic Information</h3>
-        <!-- Pokémon basic info will be dynamically inserted here -->
-    </div>
-
-    <!-- Tab Content for Stats -->
-    <div id="Stats" class="tabcontent">
-        <h3>Stats</h3>
-        <!-- Pokémon stats will be dynamically inserted here -->
-    </div>
-
-    <!-- Tab Content for Moves -->
-    <div id="Moves" class="tabcontent">
-        <h3>Moves</h3>
-        <!-- Pokémon moves will be dynamically inserted here -->
-    </div>
-
-    <!-- Tab Content for Locations -->
-    <div id="Locations" class="tabcontent">
-        <h3>Locations</h3>
-        <!-- Pokémon locations will be dynamically inserted here -->
+        
+        <!-- Result Areas -->
+        <div id="result">
+            <div id="BasicInfo" class="tabcontent"></div>
+            <div id="Stats" class="tabcontent" style="display:none;"></div>
+            <div id="Moves" class="tabcontent" style="display:none;"></div>
+            <div id="Locations" class="tabcontent" style="display:none;"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>
