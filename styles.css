@@ -1,63 +1,71 @@
 /* Global Styles */
 body {
-    font-family: 'Press Start 2P', cursive; /* Correctly reference the font */
+    font-family: 'Press Start 2P', cursive;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
     margin: 0;
-    background-image: url('pokedex.png'); /* Add a Pokémon-themed background */
+    background-image: url('pokedex.png');
     background-size: cover;
     color: #333;
 }
 
 /* Container Styles */
 #pokemon-info {
-    border: 3px solid #ffcb05; /* Bright yellow border */
+    border: 3px solid #ffcb05;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+    background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     width: 300px;
     text-align: center;
 }
 
-h1 {
-    font-size: 1.5em;
-    margin-bottom: 20px;
-    color: #3b4cca; /* Pokémon blue */
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    #pokemon-info {
+        width: 95%;
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.2em;
+    }
+
+    input[type="text"] {
+        width: calc(100% - 20px);
+        padding: 8px;
+        font-size: 0.9em;
+    }
+
+    button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+
+    .tab {
+        flex-wrap: wrap;
+    }
+
+    .tab button {
+        font-size: 0.8em;
+        padding: 8px;
+        margin-bottom: 5px;
+        width: 100%; /* Stack buttons on small screens */
+    }
+
+    .tabcontent {
+        padding: 10px;
+    }
 }
 
-input[type="text"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 2px solid #3b4cca; /* Pokémon blue */
-    border-radius: 5px;
-    font-size: 1em;
-}
-
-button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #ff0000; /* Pokémon red */
-    color: white;
-    font-size: 1em;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #cc0000; /* Darker red on hover */
-}
-
-/* Tabs Styling */
+/* Tab Styles */
 .tab {
     display: flex;
     justify-content: center;
-    background-color: #ffcb05; /* Pokémon yellow for tab background */
+    background-color: #ffcb05;
     margin-top: 20px;
     border-radius: 5px;
     padding: 10px;
@@ -65,76 +73,4 @@ button:hover {
 }
 
 .tab button {
-    padding: 10px 20px;
-    font-size: 0.8em;
-    cursor: pointer;
-    border: none;
-    background-color: #3b4cca; /* Pokémon blue for the tab buttons */
-    color: white;
-    margin-right: 5px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.tab button:hover {
-    background-color: #2b3a8c; /* Darker blue on hover */
-}
-
-.tab button.active {
-    background-color: #ff0000; /* Pokémon red for active tab */
-}
-
-/* Tab Content Styles */
-.tabcontent {
-    display: none;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.9); /* Same transparent white as the main container */
-    border-radius: 10px;
-    margin-top: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    color: #555;
-}
-
-/* Active Tab Content */
-.tabcontent.active {
-    display: block;
-}
-
-/* Result Styles */
-#result {
-    margin-top: 20px;
-}
-
-#result h2 {
-    font-size: 1.2em;
-    margin: 10px 0;
-    color: #ffcb05; /* Pokémon yellow */
-}
-
-#result img {
-    max-width: 100px;
-    display: block;
-    margin: 0 auto 10px;
-}
-
-#result p, #result ul {
-    text-align: left;
-    font-size: 0.9em;
-    color: #555;
-}
-
-#result ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-#result ul li {
-    margin-bottom: 5px;
-}
-
-/* Error Message */
-#error {
-    color: red;
-    font-weight: bold;
-    margin-top: 10px;
-}
+    padding:
