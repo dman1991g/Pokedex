@@ -53,6 +53,53 @@ button:hover {
     background-color: #cc0000; /* Darker red on hover */
 }
 
+/* Tabs Styling */
+.tab {
+    display: flex;
+    justify-content: center;
+    background-color: #ffcb05; /* Pokémon yellow for tab background */
+    margin-top: 20px;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tab button {
+    padding: 10px 20px;
+    font-size: 0.8em;
+    cursor: pointer;
+    border: none;
+    background-color: #3b4cca; /* Pokémon blue for the tab buttons */
+    color: white;
+    margin-right: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.tab button:hover {
+    background-color: #2b3a8c; /* Darker blue on hover */
+}
+
+.tab button.active {
+    background-color: #ff0000; /* Pokémon red for active tab */
+}
+
+/* Tab Content Styles */
+.tabcontent {
+    display: none;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9); /* Same transparent white as the main container */
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #555;
+}
+
+/* Active Tab Content */
+.tabcontent.active {
+    display: block;
+}
+
 /* Result Styles */
 #result {
     margin-top: 20px;
