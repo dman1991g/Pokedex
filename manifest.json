@@ -2,7 +2,7 @@
   "name": "Pokédex by [Your Name]",
   "short_name": "Pokédex",
   "description": "A simple Pokédex that provides information about Pokémon including stats, evolutions, and locations.",
-  "start_url": "/index.html",
+  "start_url": https://dman1991g.github.io/Pokedex/
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b4cca",
