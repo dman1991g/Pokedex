@@ -40,7 +40,7 @@ async function fetchPokemon() {
         `;
 
         // Moves Tab
-        const movesList = data.moves.map(move => move.move.name).slice(0, 10).join(', '); // Display first 10 moves
+        const movesList = data.moves.map(move => move.move.name).slice(0, 15).join(', '); // Display first 10 moves
         const movesInfo = `<p>Moves: ${movesList}</p>`;
 
         // Locations Tab
