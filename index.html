@@ -3,36 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokémon Info</title>
+    <title>Pokédex</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="pokemon-info">
-        <h1>Pokémon Info</h1>
-
-        <!-- Tab Buttons -->
-        <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'BasicInfo')">Basic Info</button>
-            <button class="tablinks" onclick="openTab(event, 'Stats')">Stats</button>
-            <button class="tablinks" onclick="openTab(event, 'Moves')">Moves</button>
-            <button class="tablinks" onclick="openTab(event, 'Locations')">Locations</button>
-        </div>
-
-        <!-- Search Input -->
+        <h1>Pokédex</h1>
         <p>Enter Pokémon name or ID:</p>
         <input type="text" id="pokemon-input" placeholder="e.g., Pikachu or 25">
         <button onclick="fetchPokemon()">Fetch Pokémon</button>
-        
-        <!-- Result Areas -->
-        <div id="result">
-            <div id="BasicInfo" class="tabcontent"></div>
-            <div id="Stats" class="tabcontent" style="display:none;"></div>
-            <div id="Moves" class="tabcontent" style="display:none;"></div>
-            <div id="Locations" class="tabcontent" style="display:none;"></div>
-        </div>
-    </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
+        <!-- Tab Buttons -->
+        <div id="tab-buttons">
+            <button id="btnBasicInfo" onclick="openTab('BasicInfo')">Basic Info</button>
+            <button id="btnStats" onclick="openTab('Stats')">Stats</button>
+            <button id="btnMoves" onclick="openTab('Moves')">Moves</button>
+            <button id="btnLocations" onclick="openTab('Locations')">Locations</button>
+        </div>
+
+        <!-- Result Section where information is displayed -->
+        <div id="result"></div>
+   
