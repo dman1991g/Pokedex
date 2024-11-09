@@ -56,17 +56,26 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request).then(response => {
-            return response || fetch(event.request).then(networkResponse => {
-                // Cache API responses dynamically if they’re from PokéAPI
+            // If the request is in the cache, return it
+            if (response) {
+                return response;
+            }
+            
+            // If not cached, attempt a network fetch
+            return fetch(event.request).then(networkResponse => {
+                // Cache the response if it's from the PokéAPI for dynamic data storage
                 if (event.request.url.includes('pokeapi.co')) {
                     caches.open(CACHE_NAME).then(cache => {
                         cache.put(event.request, networkResponse.clone());
                     });
                 }
                 return networkResponse;
+            }).catch(() => {
+                // Offline fallback: if request fails, show cached index.html for navigation requests
+                if (event.request.mode === 'navigate') {
+                    return caches.match('/index.html');
+                }
             });
-        }).catch(() => {
-            // Optional: handle offline error, like showing a fallback page
         })
     );
 });
