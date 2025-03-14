@@ -104,9 +104,11 @@ async function startBattle() {
     const pokemon1Input = document.getElementById('pokemon1');
     const pokemon2Input = document.getElementById('pokemon2');
     const resultDiv = document.getElementById('battle-result');
+    const pokemon1Img = document.getElementById('pokemon1-img');
+    const pokemon2Img = document.getElementById('pokemon2-img');
 
-    if (!pokemon1Input || !pokemon2Input) {
-        resultDiv.innerHTML = "Error: Pokémon input fields not found!";
+    if (!pokemon1Input || !pokemon2Input || !pokemon1Img || !pokemon2Img) {
+        resultDiv.innerHTML = "Error: Pokémon input fields or image containers not found!";
         return;
     }
 
@@ -134,6 +136,10 @@ async function startBattle() {
             return acc;
         }, {});
 
+        // Set images for Pokémon
+        pokemon1Img.src = data1.sprites.front_default;
+        pokemon2Img.src = data2.sprites.front_default;
+
         // Simplified battle logic: compare base stats and health
         let pokemon1Health = pokemon1Stats.hp;
         let pokemon2Health = pokemon2Stats.hp;
@@ -145,12 +151,12 @@ async function startBattle() {
                 // Pokémon 1 attacks Pokémon 2
                 const damage = Math.floor(Math.random() * 10) + 1; // Simple random damage
                 pokemon2Health -= damage;
-                resultDiv.innerHTML += `<p>Turn ${turn}: ${pokemon1Name} attacks ${pokemon2Name} for ${damage} damage!</p>`;
+                resultDiv.innerHTML += `<p>Turn ${turn}: <img src="${data1.sprites.front_default}" alt="${pokemon1Name}" width="50" height="50"> ${pokemon1Name} attacks ${pokemon2Name} for ${damage} damage!</p>`;
             } else {
                 // Pokémon 2 attacks Pokémon 1
                 const damage = Math.floor(Math.random() * 10) + 1; // Simple random damage
                 pokemon1Health -= damage;
-                resultDiv.innerHTML += `<p>Turn ${turn}: ${pokemon2Name} attacks ${pokemon1Name} for ${damage} damage!</p>`;
+                resultDiv.innerHTML += `<p>Turn ${turn}: <img src="${data2.sprites.front_default}" alt="${pokemon2Name}" width="50" height="50"> ${pokemon2Name} attacks ${pokemon1Name} for ${damage} damage!</p>`;
             }
 
             // Update health display
