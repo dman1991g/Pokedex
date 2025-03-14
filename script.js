@@ -1,4 +1,3 @@
-// Existing fetchPokemon() function...
 async function fetchPokemon() {
     const input = document.getElementById('pokemon-input').value.toLowerCase();
     const resultDiv = document.getElementById('result');
@@ -102,88 +101,71 @@ document.getElementById("btnLocations").addEventListener("click", () => openTab(
 
 // Battle Simulator
 async function startBattle() {
-    const pokemon1Name = document.getElementById('pokemon1-input').value.toLowerCase();
-    const pokemon2Name = document.getElementById('pokemon2-input').value.toLowerCase();
+    const pokemon1Input = document.getElementById('pokemon1');
+    const pokemon2Input = document.getElementById('pokemon2');
+    const resultDiv = document.getElementById('battle-result');
 
-    const pokemon1Data = await fetchPokemonData(pokemon1Name);
-    const pokemon2Data = await fetchPokemonData(pokemon2Name);
-
-    if (!pokemon1Data || !pokemon2Data) {
-        alert('One or both Pokémon not found!');
+    if (!pokemon1Input || !pokemon2Input) {
+        resultDiv.innerHTML = "Error: Pokémon input fields not found!";
         return;
     }
 
-    const battleResult = battle(pokemon1Data, pokemon2Data);
-    displayBattleResult(battleResult);
-}
+    const pokemon1Name = pokemon1Input.value.toLowerCase();
+    const pokemon2Name = pokemon2Input.value.toLowerCase();
 
-async function fetchPokemonData(pokemonName) {
+    resultDiv.innerHTML = 'Battle is starting...';
+
     try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
-        const data = await response.json();
-        return data;
+        // Fetch Pokémon data for both Pokémon
+        const response1 = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon1Name}`);
+        const data1 = await response1.json();
+        
+        const response2 = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon2Name}`);
+        const data2 = await response2.json();
+
+        // Extract stats for both Pokémon (simplified to base stats for this example)
+        const pokemon1Stats = data1.stats.reduce((acc, stat) => {
+            acc[stat.stat.name] = stat.base_stat;
+            return acc;
+        }, {});
+        
+        const pokemon2Stats = data2.stats.reduce((acc, stat) => {
+            acc[stat.stat.name] = stat.base_stat;
+            return acc;
+        }, {});
+
+        // Simplified battle logic: compare base stats and health
+        let pokemon1Health = pokemon1Stats.hp;
+        let pokemon2Health = pokemon2Stats.hp;
+
+        let turn = 1;
+        while (pokemon1Health > 0 && pokemon2Health > 0) {
+            // Simulate battle turn: both Pokémon attack in alternating turns
+            if (turn % 2 === 1) {
+                // Pokémon 1 attacks Pokémon 2
+                const damage = Math.floor(Math.random() * 10) + 1; // Simple random damage
+                pokemon2Health -= damage;
+                resultDiv.innerHTML += `<p>Turn ${turn}: ${pokemon1Name} attacks ${pokemon2Name} for ${damage} damage!</p>`;
+            } else {
+                // Pokémon 2 attacks Pokémon 1
+                const damage = Math.floor(Math.random() * 10) + 1; // Simple random damage
+                pokemon1Health -= damage;
+                resultDiv.innerHTML += `<p>Turn ${turn}: ${pokemon2Name} attacks ${pokemon1Name} for ${damage} damage!</p>`;
+            }
+
+            // Update health display
+            resultDiv.innerHTML += `<p>${pokemon1Name} HP: ${pokemon1Health}, ${pokemon2Name} HP: ${pokemon2Health}</p>`;
+            turn++;
+        }
+
+        // Determine winner
+        if (pokemon1Health > 0) {
+            resultDiv.innerHTML += `<p>${pokemon1Name} wins!</p>`;
+        } else {
+            resultDiv.innerHTML += `<p>${pokemon2Name} wins!</p>`;
+        }
+
     } catch (error) {
-        console.error("Error fetching Pokémon data:", error);
-        return null;
+        resultDiv.innerHTML = `<p style="color:red;">${error.message}</p>`;
     }
 }
-
-function battle(pokemon1, pokemon2) {
-    const pokemon1Speed = pokemon1.stats.find(stat => stat.stat.name === 'speed').base_stat;
-    const pokemon2Speed = pokemon2.stats.find(stat => stat.stat.name === 'speed').base_stat;
-
-    return pokemon1Speed > pokemon2Speed ? pokemon1 : pokemon2;
-}
-
-function displayBattleResult(winner) {
-    const resultDiv = document.getElementById('battle-result');
-    resultDiv.innerHTML = `
-        <h3>Battle Result:</h3>
-        <p>${winner.name.charAt(0).toUpperCase() + winner.name.slice(1)} wins!</p>
-        <img src="${winner.sprites.front_default}" alt="${winner.name}">
-    `;
-}
-
-document.getElementById('start-battle-btn').addEventListener('click', startBattle);
-
-// Trivia Section
-let currentQuestion = {};
-let score = 0;
-
-async function startTrivia() {
-    const response = await fetch('https://opentdb.com/api.php?amount=1&category=17&type=multiple');
-    const data = await response.json();
-    currentQuestion = data.results[0];
-    displayTriviaQuestion();
-}
-
-function displayTriviaQuestion() {
-    const triviaQuestionDiv = document.getElementById('trivia-question');
-    const triviaAnswersDiv = document.getElementById('trivia-answers');
-
-    triviaQuestionDiv.innerHTML = `<h3>${currentQuestion.question}</h3>`;
-
-    triviaAnswersDiv.innerHTML = '';
-    const answers = [...currentQuestion.incorrect_answers, currentQuestion.correct_answer];
-    answers.sort(() => Math.random() - 0.5);
-
-    answers.forEach(answer => {
-        const button = document.createElement('button');
-        button.textContent = answer;
-        button.onclick = () => checkAnswer(answer);
-        triviaAnswersDiv.appendChild(button);
-    });
-}
-
-function checkAnswer(answer) {
-    const triviaAnswersDiv = document.getElementById('trivia-answers');
-    if (answer === currentQuestion.correct_answer) {
-        score++;
-        triviaAnswersDiv.innerHTML = `<p style="color:green;">Correct! Your score: ${score}</p>`;
-    } else {
-        triviaAnswersDiv.innerHTML = `<p style="color:red;">Incorrect! Your score: ${score}</p>`;
-    }
-    setTimeout(startTrivia, 2000); // Start next question after 2 seconds
-}
-
-document.getElementById('start-trivia-btn').addEventListener('click', startTrivia);
