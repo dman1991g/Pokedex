@@ -2,7 +2,8 @@
 body {
     font-family: 'Press Start 2P', cursive;
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Changed to column so navbar is at the top */
+    justify-content: flex-start;
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
@@ -12,7 +13,39 @@ body {
     color: #333;
 }
 
-/* Container Styles */
+/* Navbar Styles (At the top) */
+#navbar {
+    background-color: #3b4cca;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure navbar stays on top */
+    text-align: center;
+}
+
+#navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#navbar li {
+    display: inline;
+    margin-right: 20px;
+}
+
+#navbar a {
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+#navbar a:hover {
+    text-decoration: underline;
+}
+
+/* Main Content Area Styles */
 #pokemon-info {
     border: 3px solid #ffcb05;
     padding: 20px;
@@ -21,6 +54,7 @@ body {
     border-radius: 10px;
     width: 300px;
     text-align: center;
+    margin-top: 20px; /* Added margin-top to avoid overlap with navbar */
 }
 
 /* Tab Styles */
@@ -51,6 +85,16 @@ body {
     color: white; /* Active tab text color */
 }
 
+/* Result Styles */
+#result {
+    margin-top: 20px;
+}
+
+.tabcontent {
+    display: none; /* Hide all tab content by default */
+    padding: 10px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
     #pokemon-info {
@@ -77,14 +121,4 @@ body {
         font-size: 0.8em;
         padding: 8px;
     }
-}
-
-/* Result Styles */
-#result {
-    margin-top: 20px;
-}
-
-.tabcontent {
-    display: none; /* Hide all tab content by default */
-    padding: 10px;
 }
