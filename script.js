@@ -169,5 +169,3 @@ async function startBattle() {
         resultDiv.innerHTML = `<p style="color:red;">${error.message}</p>`;
     }
 }
-
-Please add the above JavaScript to this code
