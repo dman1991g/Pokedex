@@ -3,20 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#3b4cca"> <!-- Add theme color -->
+    <meta name="theme-color" content="#3b4cca">
     <title>Pokédex by [Your Name]</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-
-    <!-- Link to the manifest.json file -->
     <link rel="manifest" href="manifest.json">
-    
-    <!-- iOS-specific meta tags for PWA behavior -->
     <link rel="apple-touch-icon" href="icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
+    <!-- Navbar Section -->
+    <nav id="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="battle.html">Battle Simulator</a></li>
+            <li><a href="trivia.html">Pokémon Trivia</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Pokédex Section -->
     <div id="pokemon-info">
         <h1>Pokédex</h1>
         <p>Enter Pokémon name or ID:</p>
@@ -31,7 +37,7 @@
             <button id="btnLocations" onclick="openTab('Locations')">Locations</button>
         </div>
 
-        <!-- Result Section where information is displayed -->
+        <!-- Result Section -->
         <div id="result"></div>
         
         <!-- Tab Content Area -->
@@ -52,18 +58,5 @@
     </div>
 
     <script src="script.js"></script>
-
-    <!-- Service worker registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js')
-            .then(function(registration) {
-                console.log('Service Worker registered with scope:', registration.scope);
-            })
-            .catch(function(error) {
-                console.log('Service Worker registration failed:', error);
-            });
-        }
-    </script>
 </body>
 </html>
