@@ -25,7 +25,19 @@
     <input type="text" id="pokemon2" placeholder="Enter second Pokémon">
     <button onclick="startBattle()">Start Battle</button>
 
-    <div id="battle-result"></div>
+    <div id="battle-result">
+        <div id="pokemon1-image-container">
+            <img id="pokemon1-image" src="" alt="Pokémon 1" style="max-width: 150px;">
+            <p id="pokemon1-name"></p>
+        </div>
+        <div id="battle-animation" class="hidden">
+            <p>Battle in progress...</p>
+        </div>
+        <div id="pokemon2-image-container">
+            <img id="pokemon2-image" src="" alt="Pokémon 2" style="max-width: 150px;">
+            <p id="pokemon2-name"></p>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
