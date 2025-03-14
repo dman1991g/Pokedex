@@ -1,3 +1,4 @@
+// Existing fetchPokemon() function...
 async function fetchPokemon() {
     const input = document.getElementById('pokemon-input').value.toLowerCase();
     const resultDiv = document.getElementById('result');
@@ -98,3 +99,91 @@ document.getElementById("btnBasicInfo").addEventListener("click", () => openTab(
 document.getElementById("btnStats").addEventListener("click", () => openTab('Stats'));
 document.getElementById("btnMoves").addEventListener("click", () => openTab('Moves'));
 document.getElementById("btnLocations").addEventListener("click", () => openTab('Locations'));
+
+// Battle Simulator
+async function startBattle() {
+    const pokemon1Name = document.getElementById('pokemon1-input').value.toLowerCase();
+    const pokemon2Name = document.getElementById('pokemon2-input').value.toLowerCase();
+
+    const pokemon1Data = await fetchPokemonData(pokemon1Name);
+    const pokemon2Data = await fetchPokemonData(pokemon2Name);
+
+    if (!pokemon1Data || !pokemon2Data) {
+        alert('One or both Pokémon not found!');
+        return;
+    }
+
+    const battleResult = battle(pokemon1Data, pokemon2Data);
+    displayBattleResult(battleResult);
+}
+
+async function fetchPokemonData(pokemonName) {
+    try {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching Pokémon data:", error);
+        return null;
+    }
+}
+
+function battle(pokemon1, pokemon2) {
+    const pokemon1Speed = pokemon1.stats.find(stat => stat.stat.name === 'speed').base_stat;
+    const pokemon2Speed = pokemon2.stats.find(stat => stat.stat.name === 'speed').base_stat;
+
+    return pokemon1Speed > pokemon2Speed ? pokemon1 : pokemon2;
+}
+
+function displayBattleResult(winner) {
+    const resultDiv = document.getElementById('battle-result');
+    resultDiv.innerHTML = `
+        <h3>Battle Result:</h3>
+        <p>${winner.name.charAt(0).toUpperCase() + winner.name.slice(1)} wins!</p>
+        <img src="${winner.sprites.front_default}" alt="${winner.name}">
+    `;
+}
+
+document.getElementById('start-battle-btn').addEventListener('click', startBattle);
+
+// Trivia Section
+let currentQuestion = {};
+let score = 0;
+
+async function startTrivia() {
+    const response = await fetch('https://opentdb.com/api.php?amount=1&category=17&type=multiple');
+    const data = await response.json();
+    currentQuestion = data.results[0];
+    displayTriviaQuestion();
+}
+
+function displayTriviaQuestion() {
+    const triviaQuestionDiv = document.getElementById('trivia-question');
+    const triviaAnswersDiv = document.getElementById('trivia-answers');
+
+    triviaQuestionDiv.innerHTML = `<h3>${currentQuestion.question}</h3>`;
+
+    triviaAnswersDiv.innerHTML = '';
+    const answers = [...currentQuestion.incorrect_answers, currentQuestion.correct_answer];
+    answers.sort(() => Math.random() - 0.5);
+
+    answers.forEach(answer => {
+        const button = document.createElement('button');
+        button.textContent = answer;
+        button.onclick = () => checkAnswer(answer);
+        triviaAnswersDiv.appendChild(button);
+    });
+}
+
+function checkAnswer(answer) {
+    const triviaAnswersDiv = document.getElementById('trivia-answers');
+    if (answer === currentQuestion.correct_answer) {
+        score++;
+        triviaAnswersDiv.innerHTML = `<p style="color:green;">Correct! Your score: ${score}</p>`;
+    } else {
+        triviaAnswersDiv.innerHTML = `<p style="color:red;">Incorrect! Your score: ${score}</p>`;
+    }
+    setTimeout(startTrivia, 2000); // Start next question after 2 seconds
+}
+
+document.getElementById('start-trivia-btn').addEventListener('click', startTrivia);
