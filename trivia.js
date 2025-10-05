@@ -23,17 +23,7 @@ const questions = [
     question: "Which Pokémon is known as the 'Mouse Pokémon'?",
     answers: ["Pikachu", "Raichu", "Eevee", "Jigglypuff"],
     correct: "Pikachu"
-  },
-  {
-   question: "What generation is the legendary pokemon Lunala from?",
-   answer:["generation7", "generation5","generation6","generation8"],
-   correct: "generation7"
-  },
-  {
-  question: "What is the first game Pikachu was in?",
-  answer:["pokemon blue","pokemon gold","pokemon yellow","let's go pikachu"]
-  correct: "pokemon blue"
-  },
+  }
 ];
 
 let currentQuestionIndex = 0;
