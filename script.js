@@ -1,75 +1,15 @@
-async function fetchPokemon() {
-    const input = document.getElementById('pokemon-input').value.toLowerCase();
-    const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = 'Loading...';
+/**********************
+ * Helper Functions
+ **********************/
 
-    try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${input}`);
-        if (!response.ok) {
-            throw new Error('Pokémon not found');
-        }
-        const data = await response.json();
-
-        // Fetch species information
-        const speciesResponse = await fetch(data.species.url);
-        const speciesData = await speciesResponse.json();
-
-        // Fetch evolution chain
-        const evolutionResponse = await fetch(speciesData.evolution_chain.url);
-        const evolutionData = await evolutionResponse.json();
-
-        // Fetch locations
-        const locationAreaResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.id}/encounters`);
-        const locationAreas = await locationAreaResponse.json();
-
-        // Basic Information Tab
-        const basicInfo = `
-            <h2>${data.name}</h2>
-            <img src="${data.sprites.front_default}" alt="${data.name}">
-            <p>Height: ${data.height}</p>
-            <p>Weight: ${data.weight}</p>
-            <p>Type: ${data.types.map(type => type.type.name).join(', ')}</p>
-            <p>Abilities: ${data.abilities.map(ability => ability.ability.name).join(', ')}</p>
-            <p>Species: ${speciesData.genera.find(genus => genus.language.name === 'en').genus}</p>
-            <p>Evolution Chain:</p>
-            <ul>
-                ${getEvolutionChain(evolutionData.chain).map(evo => `<li>${evo}</li>`).join('')}
-            </ul>
-            <p>Flavor Text:</p>
-            <p>${speciesData.flavor_text_entries.find(entry => entry.language.name === 'en').flavor_text}</p>
-        `;
-
-        // Moves Tab
-        const movesList = data.moves.map(move => move.move.name).slice(0, 15).join(', '); // Display first 10 moves
-        const movesInfo = `<p>Moves: ${movesList}</p>`;
-
-        // Locations Tab
-        const locationsInfo = `
-            <p>Locations:</p>
-            <ul>
-                ${locationAreas.map(area => `<li>${area.location_area.name}</li>`).join('')}
-            </ul>
-        `;
-
-        // Combine all tabs into the result div
-        resultDiv.innerHTML = `
-            <div id="BasicInfo" class="tabcontent">${basicInfo}</div>
-            <div id="Stats" class="tabcontent" style="display:none;">
-                <p>Base Stats:</p>
-                <ul>
-                    ${data.stats.map(stat => `<li>${stat.stat.name}: ${stat.base_stat}</li>`).join('')}
-                </ul>
-            </div>
-            <div id="Moves" class="tabcontent" style="display:none;">${movesInfo}</div>
-            <div id="Locations" class="tabcontent" style="display:none;">${locationsInfo}</div>
-        `;
-
-        // Show basic info by default
-        openTab('BasicInfo');
-
-    } catch (error) {
-        resultDiv.innerHTML = `<p style="color:red;">${error.message}</p>`;
+function formatFormName(pokemonData) {
+    if (pokemonData.name.includes('-')) {
+        return pokemonData.name
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
     }
+    return pokemonData.name.charAt(0).toUpperCase() + pokemonData.name.slice(1);
 }
 
 function getEvolutionChain(chain) {
@@ -84,22 +24,96 @@ function getEvolutionChain(chain) {
     return evoChain;
 }
 
-// Function to open tabs
+/**********************
+ * Tabs
+ **********************/
+
 function openTab(tabName) {
     const tabs = document.getElementsByClassName("tabcontent");
     for (let i = 0; i < tabs.length; i++) {
-        tabs[i].style.display = "none"; // Hide all tabs
+        tabs[i].style.display = "none";
     }
-    document.getElementById(tabName).style.display = "block"; // Show selected tab
+    const activeTab = document.getElementById(tabName);
+    if (activeTab) activeTab.style.display = "block";
 }
 
-// Add event listeners to tab buttons
-document.getElementById("btnBasicInfo").addEventListener("click", () => openTab('BasicInfo'));
-document.getElementById("btnStats").addEventListener("click", () => openTab('Stats'));
-document.getElementById("btnMoves").addEventListener("click", () => openTab('Moves'));
-document.getElementById("btnLocations").addEventListener("click", () => openTab('Locations'));
+document.getElementById("btnBasicInfo")?.addEventListener("click", () => openTab('BasicInfo'));
+document.getElementById("btnStats")?.addEventListener("click", () => openTab('Stats'));
+document.getElementById("btnMoves")?.addEventListener("click", () => openTab('Moves'));
+document.getElementById("btnLocations")?.addEventListener("click", () => openTab('Locations'));
 
-// Battle Simulator
+/**********************
+ * Main Pokédex Search
+ **********************/
+
+async function fetchPokemon() {
+    const input = document.getElementById('pokemon-input').value.toLowerCase();
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = 'Loading...';
+
+    try {
+        // 1️⃣ Fetch species (key to all forms)
+        const speciesResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${input}`);
+        if (!speciesResponse.ok) throw new Error('Pokémon not found');
+
+        const speciesData = await speciesResponse.json();
+
+        // 2️⃣ Fetch evolution chain
+        const evolutionResponse = await fetch(speciesData.evolution_chain.url);
+        const evolutionData = await evolutionResponse.json();
+
+        // 3️⃣ Fetch ALL forms (varieties)
+        const formPromises = speciesData.varieties.map(v =>
+            fetch(v.pokemon.url).then(res => res.json())
+        );
+        const formsData = await Promise.all(formPromises);
+
+        // 4️⃣ Build Forms HTML
+        const formsHTML = formsData.map(form => `
+            <div class="form-card">
+                <h3>${formatFormName(form)}</h3>
+                <img src="${form.sprites.front_default}" alt="${form.name}">
+                <p><strong>Types:</strong> ${form.types.map(t => t.type.name).join(', ')}</p>
+                <p><strong>Abilities:</strong> ${form.abilities.map(a => a.ability.name).join(', ')}</p>
+                <ul>
+                    ${form.stats.map(stat => `<li>${stat.stat.name}: ${stat.base_stat}</li>`).join('')}
+                </ul>
+            </div>
+        `).join('');
+
+        // 5️⃣ Build Basic Info tab (species-based)
+        const basicInfo = `
+            <h2>${speciesData.name}</h2>
+            <p>${speciesData.genera.find(g => g.language.name === 'en')?.genus || ''}</p>
+
+            <p><strong>Evolution Chain:</strong></p>
+            <ul>
+                ${getEvolutionChain(evolutionData.chain).map(evo => `<li>${evo}</li>`).join('')}
+            </ul>
+
+            <p><strong>Flavor Text:</strong></p>
+            <p>${speciesData.flavor_text_entries.find(e => e.language.name === 'en')?.flavor_text || ''}</p>
+        `;
+
+        // 6️⃣ Inject into DOM
+        resultDiv.innerHTML = `
+            <div id="BasicInfo" class="tabcontent">${basicInfo}</div>
+            <div id="Forms" class="tabcontent" style="display:none;">
+                ${formsHTML}
+            </div>
+        `;
+
+        openTab('BasicInfo');
+
+    } catch (error) {
+        resultDiv.innerHTML = `<p style="color:red;">${error.message}</p>`;
+    }
+}
+
+/**********************
+ * Battle Simulator
+ **********************/
+
 async function startBattle() {
     const pokemon1Input = document.getElementById('pokemon1');
     const pokemon2Input = document.getElementById('pokemon2');
@@ -116,54 +130,42 @@ async function startBattle() {
     resultDiv.innerHTML = 'Battle is starting...';
 
     try {
-        // Fetch Pokémon data for both Pokémon
         const response1 = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon1Name}`);
         const data1 = await response1.json();
-        
+
         const response2 = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon2Name}`);
         const data2 = await response2.json();
 
-        // Extract stats for both Pokémon (simplified to base stats for this example)
         const pokemon1Stats = data1.stats.reduce((acc, stat) => {
             acc[stat.stat.name] = stat.base_stat;
             return acc;
         }, {});
-        
+
         const pokemon2Stats = data2.stats.reduce((acc, stat) => {
             acc[stat.stat.name] = stat.base_stat;
             return acc;
         }, {});
 
-        // Simplified battle logic: compare base stats and health
         let pokemon1Health = pokemon1Stats.hp;
         let pokemon2Health = pokemon2Stats.hp;
-
         let turn = 1;
+
         while (pokemon1Health > 0 && pokemon2Health > 0) {
-            // Simulate battle turn: both Pokémon attack in alternating turns
+            const damage = Math.floor(Math.random() * 10) + 1;
             if (turn % 2 === 1) {
-                // Pokémon 1 attacks Pokémon 2
-                const damage = Math.floor(Math.random() * 10) + 1; // Simple random damage
                 pokemon2Health -= damage;
                 resultDiv.innerHTML += `<p>Turn ${turn}: ${pokemon1Name} attacks ${pokemon2Name} for ${damage} damage!</p>`;
             } else {
-                // Pokémon 2 attacks Pokémon 1
-                const damage = Math.floor(Math.random() * 10) + 1; // Simple random damage
                 pokemon1Health -= damage;
                 resultDiv.innerHTML += `<p>Turn ${turn}: ${pokemon2Name} attacks ${pokemon1Name} for ${damage} damage!</p>`;
             }
-
-            // Update health display
             resultDiv.innerHTML += `<p>${pokemon1Name} HP: ${pokemon1Health}, ${pokemon2Name} HP: ${pokemon2Health}</p>`;
             turn++;
         }
 
-        // Determine winner
-        if (pokemon1Health > 0) {
-            resultDiv.innerHTML += `<p>${pokemon1Name} wins!</p>`;
-        } else {
-            resultDiv.innerHTML += `<p>${pokemon2Name} wins!</p>`;
-        }
+        resultDiv.innerHTML += pokemon1Health > 0
+            ? `<p>${pokemon1Name} wins!</p>`
+            : `<p>${pokemon2Name} wins!</p>`;
 
     } catch (error) {
         resultDiv.innerHTML = `<p style="color:red;">${error.message}</p>`;
